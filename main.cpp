@@ -2,6 +2,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#define GL_ERROR_CASE(glerror)\
+    case glerror: snprintf(error, sizeof(error), "%s", #glerror)
+
 void error_callback(int error, const char* description)
 {
     // Print the error description to stderr
@@ -13,8 +16,11 @@ int main()
     // Set the error callback function
     glfwSetErrorCallback(error_callback);
 
-    if(!glfwInit())
+    // Initialize GLFW
+    if (!glfwInit()) {
+        fprintf(stderr, "Failed to initialize GLFW\n");
         return -1;
+    }
 
     // Declare a pointer to a GLFW window
     GLFWwindow* window;
@@ -31,49 +37,45 @@ int main()
     // Create a windowed mode window and its OpenGL context
     window = glfwCreateWindow(640, 480, "Space Invaders", NULL, NULL);
     // Check if the window creation failed
-    if(!window)
-    {
-        // Terminate GLFW
+    if (!window) {
+        fprintf(stderr, "Failed to create GLFW window\n");
         glfwTerminate();
-        // Return error code
         return -1;
     }
+    
     // Make the window's context current
     glfwMakeContextCurrent(window);
 
     // Initialize GLEW to setup the OpenGL Function pointers
     GLenum err = glewInit();
-    // Check if GLEW initialization failed
-    if(err != GLEW_OK)
-    {
-        // Print error message to stderr
-        fprintf(stderr, "Error initializing GLEW.\n");
-        // Terminate GLFW
+    if (err != GLEW_OK) {
+        fprintf(stderr, "Error initializing GLEW: %s\n", glewGetErrorString(err));
         glfwTerminate();
-        // Return error code
         return -1;
     }
 
     // Declare an array to store the OpenGL version
-    int glVersion[2] = {-1, 1};
-    // Get the major version of the OpenGL context
+    int glVersion[2] = {-1, -1};
     glGetIntegerv(GL_MAJOR_VERSION, &glVersion[0]);
-    // Get the minor version of the OpenGL context
     glGetIntegerv(GL_MINOR_VERSION, &glVersion[1]);
 
     // Print the OpenGL version being used
     printf("Using OpenGL: %d.%d\n", glVersion[0], glVersion[1]);
 
-    glClearColor(1.0, 0.0, 0.0, 1.0);
-    while (!glfwWindowShouldClose(window))
-    {
+    // Main loop
+    glClearColor(1.0, 0.0, 0.0, 1.0); // Set a red background color
+    while (!glfwWindowShouldClose(window)) {
+        // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Swap front and back buffers
         glfwSwapBuffers(window);
 
+        // Poll for and process events
         glfwPollEvents();
     }
 
+    // Cleanup and exit
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;

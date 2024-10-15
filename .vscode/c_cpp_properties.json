@@ -1,17 +1,19 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
-                "C:\\Users\\Caleb\\Documents\\VS-Dependencies/**"
+                "${workspaceFolder}",
+                "/usr/include",
+                "${workspaceFolder}/GL/",
+                "${workspaceFolder}/GLFW/",
+                "${workspaceFolder}"
             ],
-            "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
-            ],
-            "compilerPath": "C:/MinGW/bin/g++.exe"
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "gnu17",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4
